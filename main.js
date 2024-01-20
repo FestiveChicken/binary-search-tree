@@ -59,29 +59,80 @@ class Tree {
       parent.right = newNode;
     }
     else if (data == parent.data) {
-      return prettyPrint(this.root)
+      return prettyPrint(this.root);
     }
-    prettyPrint(this.root)
+    prettyPrint(this.root);
   }
 
-  delete(userInput, current, parent) {
+  delete(userInput, current = this.root, parent = null) {
     if (current === undefined) {
-      current = this.root;
+      console.log('Value not found');
+      return prettyPrint(this.root);
     }
     //Case 1: Current Node is Equal to User Input
     if (userInput == current.data) {
-      console.log('you found the value');
-      if (current.left == null) {
-        current = current.right
+      //Case 1: Node has no children
+      if (current.right == null && current.left == null) {
+        //Checks if current is to the right or left of parent node
+        if (current.data == parent.right.data) {
+          parent.right = null;
+          return prettyPrint(this.root);
+        }
+        else {
+          parent.left = null;
+          return prettyPrint(this.root);
+        }
       }
-      current.node = current.left
-      console.log(current)
-      return prettyPrint(this.root)
+      //Case 3: Node has both children
+      else if (current.right != null && current.left != null) {
+        let replacement = current.right;
+        if (replacement.left != null) {
+          while (replacement.left != null) {
+            parent = replacement;
+            replacement = replacement.left;
+          }
+          current.data = replacement.data;
+          parent.left = null;
+          return prettyPrint(this.root);
+        }
+        current.data = replacement.data;
+        current.right = null;
+        return prettyPrint(this.root);
+
+      }
+      //Case 2: Node has one child
+      else {
+        //Checks to see if the child node is to the right
+        if (current.right != null) {
+          //Checks if current is to the right or left of parent node
+          if (current.data == parent.right.data) {
+            parent.right = current.right;
+            return prettyPrint(this.root);
+          }
+          else {
+            parent.left = current.right;
+            return prettyPrint(this.root);
+          }
+        }
+        //Checks to see if the child node is to the left
+        else {
+          //Checks if current is to the right or left of parent node
+          if (current.data == parent.right.data) {
+            parent.right = current.left;
+            return prettyPrint(this.root);
+          }
+          else {
+            parent.left = current.left;
+            return prettyPrint(this.root);
+          }
+        }
+      }
+
     }
     //Case 2: Current Node is Greater than User Input
     if (userInput < current.data) {
       if (current.right === null) {
-        console.log('your ride ends here chief');
+        console.log('Value does not exist');
         return;
       }
       parent = current
@@ -90,11 +141,11 @@ class Tree {
     //Case 3: Current Node is Less than User Input
     if (userInput > current.data) {
       if (current.left === null) {
-        console.log('your ride ends here chief');
+        console.log('Value does not exist');
         return;
       }
-      parent = current
-      this.delete(userInput, current.left, parent)
+      parent = current;
+      this.delete(userInput, current.left, parent);
     }
   }
 }
@@ -113,4 +164,4 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 }
 
 //Initial tree for testing
-const tree = new Tree([1, 7, 4, 6, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+const tree = new Tree([1, 7, 4, 6, 23, 8, 9, 4, 3, 5, 7, 9, 67, 50, 30, 20, 40, 32, 34, 36])
