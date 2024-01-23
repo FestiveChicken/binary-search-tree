@@ -31,8 +31,8 @@ class Tree {
     return rootNode;
   }
     
-  insert(data) {
-    const newNode = new Node(data);
+  insert(userInput) {
+    const newNode = new Node(userInput);
 
     if (this.root === null) {
       this.root = newNode;
@@ -44,7 +44,7 @@ class Tree {
 
     while (current !== null) {
       parent = current;
-      if (data > current.data) {
+      if (userInput > current.data) {
         current = current.left;
       } 
       else {
@@ -52,13 +52,13 @@ class Tree {
       }
     }
 
-    if (data > parent.data) {
+    if (userInput > parent.data) {
       parent.left = newNode;
     } 
-    else if (data < parent.data) {
+    else if (userInput < parent.data) {
       parent.right = newNode;
     }
-    else if (data == parent.data) {
+    else if (userInput == parent.data) {
       return prettyPrint(this.root);
     }
     prettyPrint(this.root);
@@ -135,7 +135,7 @@ class Tree {
         console.log('Value does not exist');
         return;
       }
-      parent = current
+      parent = current;
       this.delete(userInput, current.right, parent);
     }
     //Case 3: Current Node is Less than User Input
@@ -148,7 +148,57 @@ class Tree {
       this.delete(userInput, current.left, parent);
     }
   }
+
+  find(userInput, current = this.root) {
+    // Case 1: Current Node is Equal to User Input
+    if (userInput == current.data) {
+        return current;
+    }
+    // Case 2: Current Node is Greater than User Input
+    if (userInput < current.data) {
+        if (current.right === null) {
+            console.log('Value does not exist');
+            return null;
+        }
+        return this.find(userInput, current.right); // Return the result of the recursive call
+    }
+    // Case 3: Current Node is Less than User Input
+    if (userInput > current.data) {
+        if (current.left === null) {
+            console.log('Value does not exist');
+            return null;
+        }
+        return this.find(userInput, current.left); // Return the result of the recursive call
+    }
+  }
+
+  levelOrder() {
+    const queue = []
+    const result = []
+    queue.push(this.root)
+
+    while (queue.length != 0) {
+      if (queue[0].left != null) {
+        queue.push(queue[0].left)
+      }
+      if (queue[0].right != null) {
+        queue.push(queue[0].right )
+      }
+      result.push(queue[0].data)
+      queue.shift()
+    }
+    return result
+  }
+
+  inOrder() {
+    //go to bottom left, go up, if node has children, display children, else go up
+    //once at root go right subtree all the way to the bottom left and repeat
+    const result = []
+    
+  }
 }
+
+
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node === null) {
