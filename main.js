@@ -173,30 +173,156 @@ class Tree {
   }
 
   levelOrder() {
-    const queue = []
-    const result = []
-    queue.push(this.root)
+    const queue = [];
+    const result = [];
+    queue.push(this.root);
 
     while (queue.length != 0) {
       if (queue[0].left != null) {
-        queue.push(queue[0].left)
+        queue.push(queue[0].left);
       }
       if (queue[0].right != null) {
-        queue.push(queue[0].right )
+        queue.push(queue[0].right);
       }
-      result.push(queue[0].data)
-      queue.shift()
+      result.push(queue[0].data);
+      queue.shift();
     }
-    return result
+    return result;
   }
 
-  inOrder() {
-    //go to bottom left, go up, if node has children, display children, else go up
-    //once at root go right subtree all the way to the bottom left and repeat
-    const result = []
-    
+  inOrder(current = this.root) {
+    const result = [];
+  
+    // Helper function to perform the traversal
+    function traverse(node) {
+      if (node) {
+        // Traverse the left subtree
+        traverse(node.left);
+  
+        // Visit the current node
+        result.push(node.data);
+  
+        // Traverse the right subtree
+        traverse(node.right);
+      }
+    }
+  
+    // Start the traversal from the root
+    traverse(current);
+  
+    // Output the result
+    return result;
+  }
+
+  preOrder(current = this.root) {
+    const result = [];
+  
+    // Helper function to perform the traversal
+    function traverse(node) {
+      if (node) {
+        // Visit the current node
+        result.push(node.data);
+  
+        // Traverse the left subtree
+        traverse(node.left);
+  
+        // Traverse the right subtree
+        traverse(node.right);
+      }
+    }
+  
+    // Start the traversal from the root
+    traverse(current);
+  
+    // Output the result
+    console.log(result);
+  }
+
+  postOrder(current = this.root) {
+    const result = [];
+  
+    // Helper function to perform the traversal
+    function traverse(node) {
+      if (node) {
+        // Traverse the left subtree
+        traverse(node.left);
+  
+        // Traverse the right subtree
+        traverse(node.right);
+  
+        // Visit the current node
+        result.push(node.data);
+      }
+    }
+  
+    // Start the traversal from the root
+    traverse(current);
+  
+    // Output the result
+    console.log(result);
+  }  
+
+  //Function that finds the height of a node
+  height(node = this.root) {
+    // Base case: if the node is null, the height is 0
+    if (node === null) {
+      return 0;
+    }
+  
+    // Recursively calculate the height of the left and right subtrees
+    const leftHeight = this.height(node.left);
+    const rightHeight = this.height(node.right);
+  
+    // Return the maximum height among the left and right subtrees, plus 1 for the current level
+    return Math.max(leftHeight, rightHeight) + 1;
+  } 
+
+  //Funciton that finds the depth of the tree
+  depth(node, currentDepth = 0) {
+    if (node === null) {
+      return currentDepth;
+    }
+
+    const leftDepth = this.depth(node.left, currentDepth + 1);
+    const rightDepth = this.depth(node.right, currentDepth + 1);
+
+    return Math.max(leftDepth, rightDepth);
+  }
+
+  //Function to check if tree is balanced
+  isBalanced(node) {
+    if (node === null) {
+      return true;
+    }
+  
+    const leftHeight = this.depth(node.left);
+    const rightHeight = this.depth(node.right);
+  
+    if (Math.abs(leftHeight - rightHeight) > 1) {
+      return false;
+    }
+  
+    return this.isBalanced(node.left) && this.isBalanced(node.right);
+  }
+  
+  // Function to rebalance the tree
+  rebalance() {
+    const valuesArray = this.inOrderTraversal(this.root);
+    this.root = this.buildTree(valuesArray);
+    return prettyPrint(this.root)
+  }
+
+  // In-order traversal to extract values from the tree
+  inOrderTraversal(node, result = []) {
+    if (node !== null) {
+      this.inOrderTraversal(node.right, result);
+      result.push(node.data);
+      this.inOrderTraversal(node.left, result);
+    }
+    return result;
   }
 }
+
 
 
 
